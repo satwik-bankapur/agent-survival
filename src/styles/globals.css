@@ -1,0 +1,174 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/*
+ * Base layer. The look is "an architect's study model on a Prussian-blue
+ * cutting mat under a desk lamp at night": opaque surfaces, hairline borders,
+ * cockpit type. No glassmorphism, blur or gradient washes.
+ */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--mat);
+    color: var(--ink);
+    font-family: var(--font-hud);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Live numbers must not jitter as they update at 4 Hz. */
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-num);
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: var(--focus-ring-width) solid var(--ink);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+/*
+ * Archivo is a variable font, and the display style is specifically width 125
+ * weight 800. font-family alone gets the default width, which reads as the
+ * wrong typeface, so the display style carries its axis settings.
+ *
+ * Named .type-display rather than .font-display, which is the utility Tailwind
+ * already generates from --font-display.
+ */
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 125%;
+  font-variation-settings: 'wdth' 125;
+}
+
+/* Live numbers: B612 Mono with tabular figures. */
+@utility type-num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * B612 Mono sets ".", "," and ":" in a full 0.65 em cell with the ink in its
+ * left 0.06–0.24 em, which reads as "0. 42 s". <Num> wraps those glyphs in
+ * this span, which narrows the cell to 0.30 em (proportional B612's own
+ * period) and centres the ink. Digits keep their width, so nothing jitters.
+ */
+.num-punct {
+  margin-right: -0.35em;
+}
+
+/* Trust critical: a red inset glow at the screen edges, pulsing at 1 Hz. */
+.critical-edge {
+  box-shadow:
+    inset 0 0 0 2px rgb(255 68 51 / 0.7),
+    inset 0 0 36px rgb(255 68 51 / 0.35);
+  animation: critical-edge-pulse 1s ease-in-out infinite;
+}
+
+@keyframes critical-edge-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Board badges for a moment (timed out, queue full, wrong answer) rise into place once. */
+.badge-rise {
+  animation: badge-rise 250ms ease-out both;
+}
+
+@keyframes badge-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--rise, 8px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The money panel when net first turns negative: two red beats on its border, then still. */
+.net-pulse {
+  animation: net-pulse 900ms ease-in-out 1;
+}
+
+@keyframes net-pulse {
+  0%,
+  50%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(255 68 51 / 0);
+  }
+  25%,
+  75% {
+    box-shadow:
+      0 0 0 1px var(--alarm),
+      0 0 14px rgb(255 68 51 / 0.35);
+  }
+}
+
+/* A "+$5.00" over the exit crowd: it drifts up and fades. */
+.money-float {
+  animation: money-float 1.2s ease-out both;
+}
+
+@keyframes money-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes money-float-still {
+  0% {
+    opacity: 0;
+  }
+  15%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion (the setting, or the system preference before one is saved): nothing pulses, rises or drifts. */
+:root[data-reduced-motion] .critical-edge,
+:root[data-reduced-motion] .badge-rise,
+:root[data-reduced-motion] .net-pulse {
+  animation: none;
+}
+
+:root[data-reduced-motion] .money-float {
+  animation-name: money-float-still;
+}

@@ -1,0 +1,176 @@
+/*
+ * Design tokens, transcribed from the "HUD language" artboard in design/
+ * (03 HUD Language.dc.html, the artboard's own :root dump).
+ *
+ * design/ is the visual source of truth (D37). Where the export and docs/
+ * disagree on a value, the export wins. Artboard names are kept exactly
+ * (--mat, --ink, --pkt-agent, ...); each one is then aliased into a Tailwind
+ * namespace in the same block, so utilities like bg-mat, text-ink-dim,
+ * border-hairline, rounded-panel and font-num all come from these values
+ * and nowhere else.
+ *
+ * "static" so every token reaches :root even when no utility uses it yet:
+ * src/canvas reads these by name from JS for three.js materials.
+ */
+
+@theme static {
+  /* ---------------------------------------------------------------- Scene
+   * The board. Matte and quiet.
+   */
+  --desk: #140f0b; /* Desk beyond the mat, walnut in shadow */
+  --mat: #17324a; /* Prussian-blue cutting mat */
+  --mat-grid: #2a4d6a; /* Fine grid */
+  --mat-grid-4: #3b6385; /* Every fourth line */
+  --mat-ruler: #6f93b3; /* Ruler marks, grid references */
+  --chipboard-top: #bfb49d; /* Node top face, lightest */
+  --chipboard-left: #a99d86; /* Node left face */
+  --chipboard-right: #857a65; /* Node right face, darkest */
+  --chipboard-glyph: #5f5646; /* Engraved glyphs */
+  --obsidian: #1c1d21; /* Self-hosted GPU only */
+  --copper: #c27a45; /* GPU fins */
+  --acrylic: #f3f7fa; /* Hosted APIs only, at 55% with a 1 px bright edge */
+  --glass: #cfe3f2; /* Tubes, at 30% */
+  --glass-glow: #e9f4ff; /* Tube inner glow */
+  --figure: #f2efe6; /* Scale figures */
+  --lamp: #ffe2b8; /* Warm key light, top left */
+
+  /* The two translucent materials carry their opacity as a token of its own,
+   * so the canvas layer doesn't have to re-read it out of a comment. */
+  --acrylic-opacity: 0.55;
+  --glass-opacity: 0.3;
+
+  --color-desk: var(--desk);
+  --color-mat: var(--mat);
+  --color-mat-grid: var(--mat-grid);
+  --color-mat-grid-4: var(--mat-grid-4);
+  --color-mat-ruler: var(--mat-ruler);
+  --color-chipboard-top: var(--chipboard-top);
+  --color-chipboard-left: var(--chipboard-left);
+  --color-chipboard-right: var(--chipboard-right);
+  --color-chipboard-glyph: var(--chipboard-glyph);
+  --color-obsidian: var(--obsidian);
+  --color-copper: var(--copper);
+  --color-acrylic: var(--acrylic);
+  --color-glass: var(--glass);
+  --color-glass-glow: var(--glass-glow);
+  --color-figure: var(--figure);
+  --color-lamp: var(--lamp);
+
+  /* ------------------------------------------------------------------ HUD
+   * Opaque panels and ink. No blur, glass or gradient fills.
+   */
+  --panel: #0e2133; /* Panel */
+  --panel-raised: #142c42; /* Raised panel, controls */
+  --hairline: #26445e; /* Borders and cell dividers */
+  --ink: #e8eef3; /* Primary text, reverse-video fill */
+  --ink-dim: #9db2c4; /* Labels, secondary text */
+  --ink-faint: #637e96; /* Non-essential text only */
+
+  --color-panel: var(--panel);
+  --color-panel-raised: var(--panel-raised);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
+
+  /* -------------------------------------------------------------- Traffic
+   * Emissive. Steps down in lightness as well as hue.
+   */
+  --pkt-chat: #fff2d8; /* Chat, warm white */
+  --pkt-rag: #2bc2ac; /* RAG question, teal */
+  --pkt-agent: #a6e22e; /* Agent task, lime */
+  --pkt-adv: #ff52b4; /* Adversarial, magenta */
+
+  --color-pkt-chat: var(--pkt-chat);
+  --color-pkt-rag: var(--pkt-rag);
+  --color-pkt-agent: var(--pkt-agent);
+  --color-pkt-adv: var(--pkt-adv);
+
+  /* ---------------------------------------------------------------- State
+   * Healthy has no color, just a dim status light. Red means a real failure.
+   */
+  --warn: #ffb43a; /* Warning, saturation, half deadline */
+  --alarm: #ff4433; /* Something broke. Real failures only */
+  --healthy: #637e96; /* Dim ink status light */
+
+  --color-warn: var(--warn);
+  --color-alarm: var(--alarm);
+  --color-healthy: var(--healthy);
+
+  /* ---------------------------------------------------- Postmortem sheet
+   * The one light screen.
+   */
+  --sheet: #f4f6f3; /* Drafting sheet */
+  --sheet-ink: #13293d; /* Sheet ink */
+  --sheet-alarm: #c62a1d; /* Alarm red, darkened for text on the sheet */
+
+  --color-sheet: var(--sheet);
+  --color-sheet-ink: var(--sheet-ink);
+  --color-sheet-alarm: var(--sheet-alarm);
+
+  /* ----------------------------------------------------------------- Type
+   * Archivo at width 125 weight 800 for display, B612 for HUD text,
+   * B612 Mono for live numbers.
+   */
+  --font-display: 'Archivo', system-ui, sans-serif;
+  --font-hud: 'B612', system-ui, sans-serif;
+  --font-num: 'B612 Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* The artboard's nine steps, by role. Sizes and roles are the artboard's;
+   * the names are ours, since the artboard labels only px and role. */
+  --text-display-xl: 72px; /* Display, title wordmark (Archivo 800) */
+  --text-display-xl--line-height: 76px;
+  --text-display: 48px; /* Display, phase card, postmortem (Archivo 800) */
+  --text-display--line-height: 52px;
+  --text-readout: 36px; /* Big readouts (B612 Mono) */
+  --text-readout--line-height: 40px;
+  --text-section: 28px; /* Section titles (Archivo 800) */
+  --text-section--line-height: 32px;
+  --text-value-lg: 21px; /* Panel values, clock, tagline (B612 Mono) */
+  --text-value-lg--line-height: 24px;
+  --text-value: 16px; /* Panel values, drawer titles (B612 700) */
+  --text-value--line-height: 20px;
+  --text-body: 14px; /* Body */
+  --text-body--line-height: 20px;
+  --text-label: 12px; /* Labels, legends, plates */
+  --text-label--line-height: 16px;
+  --text-hint: 11px; /* Key hints, small legends (B612 Mono) */
+  --text-hint--line-height: 14px;
+
+  /* -------------------------------------------------------------- Spacing
+   * 4 px base. Tailwind's own spacing scale is left alone: it is also a 4 px
+   * base, so p-4 is 16px is --space-4, and renaming --spacing-* here would
+   * silently renumber every utility in the project.
+   */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* --------------------------------------------------- Radius by hierarchy */
+  --radius-panel: 6px;
+  --radius-control: 4px;
+  --radius-badge: 2px;
+  /* Full radius is for capsules only. */
+
+  /* --------------------------------------------------------------- Stroke */
+  --hairline-width: 1px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --icon-stroke: 1.5px; /* Line icons, at 16 and 20 px */
+
+  /* --------------------------------------------------------------- Layout
+   * Built for 1440 x 900 and 1280 x 720. Rails sit 16 px from the screen
+   * edges. Compact is the 1280 column.
+   */
+  --rail-inset: 16px;
+  --rail-left: 232px;
+  --rail-right: 256px;
+  --toolbar-width: 720px;
+  --rail-left-compact: 216px;
+  --rail-right-compact: 240px;
+  --toolbar-width-compact: 640px;
+}
