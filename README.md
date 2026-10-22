@@ -5,7 +5,7 @@
 <!-- TODO: record a 10–15 s loop of a run going from naive to full build, save as docs/media/demo.gif -->
 ![A run in progress: prompts flow through a semantic cache, router and guardrail as traffic grows](docs/media/demo.gif)
 
-**[Play it in your browser](https://agent-survival.runs-on.dev)** · desktop browser, 1280 px or wider · no install, no account
+**[Play it in your browser](https://agentsurvival.runs-on.dev/)** · desktop browser, 1280 px or wider · no install, no account
 
 [![CI](https://github.com/satwik-bankapur/agent-survival/actions/workflows/ci.yml/badge.svg)](https://github.com/satwik-bankapur/agent-survival/actions/workflows/ci.yml) [![Pages](https://github.com/satwik-bankapur/agent-survival/actions/workflows/pages.yml/badge.svg)](https://github.com/satwik-bankapur/agent-survival/actions/workflows/pages.yml)
 
