@@ -326,7 +326,7 @@ Done when:
 - **The flaky test was `engine.perf.test.ts > performance > runs 6,000 ticks of the {full,p2-full} build in under 200 ms`.** It budgeted `performance.now()`, which counts the milliseconds the process sat descheduled while something else held the cores: with the balance suite alongside, the unchanged engine measured 216 ms and 291 ms against the 200 ms cap, where idle it measures 32 ms. It now budgets `process.cpuUsage()`, the work actually done, which moved only 63 ms -> 79 ms under the same load. The cap stayed at 200 ms. `npm test` itself never flaked: 38 runs, all green.
 - **History cleaned.** `git filter-repo --invert-paths` dropped `design/support.js`, `design/iso.js`, `design/*.dc.html` and `design/.thumbnail` from all 17 commits, and `.gitignore` keeps them out from here. `design/README.md` and `design/screens/*.png` stay tracked. The repo went from 5.05 MiB of loose objects to a 585 KiB pack. The pre-rewrite mirror is kept outside the repo at `../agent-survival-backup-2026-10-22.git`.
 - **`master` renamed to `main`.** The outer wrapper repo (two commits, both pointer bumps of the `agent-survival` gitlink, no remote) is retired: `agent-survival` is the repo that ships.
-- **GitHub Pages** on `agent-survival.runs-on.dev`: Vite's `base` stays `/`, `public/CNAME` ships the domain into `dist/`, and `.github/workflows/pages.yml` runs the fast suite, builds and publishes `dist/` on every push to `main`.
+- **GitHub Pages** on `agentsurvival.runs-on.dev`: Vite's `base` stays `/`, `public/CNAME` ships the domain into `dist/`, and `.github/workflows/pages.yml` runs the fast suite, builds and publishes `dist/` on every push to `main`.
 
 ## Milestone 5 (optional): real prompts
 
