@@ -95,3 +95,5 @@ One developer, built in planned sessions with [Claude Code](https://claude.com/c
 - [`docs/build-plan.md`](docs/build-plan.md): the session-by-session plan, one milestone at a time.
 - [`CLAUDE.md`](CLAUDE.md): the standing rules: architecture, code style, and the stop-and-ask rule when a balance target misses badly.
 - [`docs/decisions.md`](docs/decisions.md): every rule and number, with the reason and the tuning history.
+
+
