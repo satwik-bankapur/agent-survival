@@ -22,6 +22,7 @@ import {
   PHASE2_SCENARIOS,
   PHASE3_SCENARIOS,
   PHASE4_SCENARIOS,
+  GETCRUX_SCENARIOS,
   agentPassCosts,
   capacityShapes,
   judgeCosts,
@@ -206,7 +207,7 @@ printTable(
 // Balance runs
 // ---------------------------------------------------------------------------
 
-const header = ['Build', 'Died', 'Causes', 'Median death', 'Median budget', 'End budget', 'Budget IQR', 'Min trust', 'Trust from',  'Timeouts', 'Failures', 'Wrong', 'Agent wrong', 'Agent $/task', 'Breaches', 'Served', 'Target']
+const header = ['Build', 'Died', 'Causes', 'Median death', 'Median budget', 'End budget', 'Budget IQR', 'Min trust', 'Trust from', 'Timeouts', 'Failures', 'Wrong', 'Agent wrong', 'Agent $/task', 'Breaches', 'Served', 'Target']
 const misses: string[] = []
 const bigMisses: string[] = []
 const notes: string[] = []
@@ -267,6 +268,7 @@ balanceTable('Classic mode (decisions section G, D40), 0:00–5:00', CLASSIC_SCE
 balanceTable('Phase 2 (D49): RAG and attacks from 2:00, incident director on, 0:00–5:00', PHASE2_SCENARIOS)
 balanceTable('Phase 3 (I-4): agents from 5:00, all traffic and events on, 0:00–9:00 (one build to 12:00)', PHASE3_SCENARIOS)
 balanceTable('Phase 4 (J-6): the outage drill (Frontier A down 9:30–10:30, to 11:00) and the endless phase (to 25:00)', PHASE4_SCENARIOS)
+balanceTable('GetCrux drill: Veo (Frontier A) down 4:30–6:00, ad-batch surges, injected threads, 0:00–9:00', GETCRUX_SCENARIOS)
 console.log(`\n${((performance.now() - started) / 1000).toFixed(1)} s`)
 for (const n of notes) console.log(`Note: ${n}`)
 if (bigMisses.length > 0) {

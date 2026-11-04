@@ -596,14 +596,87 @@ export const PHASE4_SCENARIOS: readonly Scenario[] = [
   ),
 ]
 
-export const SCENARIOS: readonly Scenario[] = [...CLASSIC_SCENARIOS, ...PHASE2_SCENARIOS, ...PHASE3_SCENARIOS, ...PHASE4_SCENARIOS]
+/**
+ * The GetCrux drill, built from GetCrux's public pages only (Oct 2026). Ad-batch surges and
+ * injected research threads come more often, and Veo (Frontier A) goes down 4:30–6:00 while
+ * Kling (Frontier B) has to carry the load. Runs to 9:00.
+ */
+export const GETCRUX_DRILL: Catalog = makeCatalog({
+  director: {
+    drill: { provider: 0, startSec: 270, endSec: 360 },
+    events: {
+      TRAFFIC_SURGE: { name: 'Ad batch surge', weights: [0.3, 0.3, 0.15], durationSec: [60, 60], notBeforeSec: 0 },
+      JAILBREAK: { name: 'Injected Reddit thread', weights: [0, 0.3, 0.1], durationSec: [25, 25], notBeforeSec: 135 },
+    },
+  },
+})
+
+export const GETCRUX_SCENARIOS: readonly Scenario[] = [{
+  id: 'getcrux-ad-factory',
+  mode: 'survival',
+  label: 'GetCrux drill: ad-batch surges, injected threads, Veo down 4:30–6:00',
+  steps: [
+    { atSec: 0, run: (api) => fullM2(api) },
+    { atSec: M3_AT, run: (api) => fullM3(api, { ...FULL_M3, breakers: true }) },
+  ],
+  target: { minDeathRate: 0.5, mostlyCause: 'TRUST' },
+  targetText: '≥50% die, mostly of trust: Veo down, no spare capacity',
+  untilSec: NINE,
+  catalog: GETCRUX_DRILL,
+  trustFromSec: 270,
+},
+{
+  id: 'getcrux-fix-shed',
+  mode: 'survival',
+  label: 'GetCrux fix 1: shed load to 20/s while Veo is down',
+  steps: [
+    { atSec: 0, run: (api) => fullM2(api) },
+    { atSec: M3_AT, run: (api) => fullM3(api, { ...FULL_M3, breakers: true }) },
+    { atSec: 265, run: (api) => api.set(api.usersIn, 'maxPerSec', 20) },
+    { atSec: 360, run: (api) => api.set(api.usersIn, 'maxPerSec', FULL_M3.throttle) },
+  ],
+  target: { maxDeathRate: 0.5, losesLessThanOf: { id: 'getcrux-ad-factory' } },
+  targetText: '≤50% die, and loses less than the base drill',
+  untilSec: NINE,
+  catalog: GETCRUX_DRILL,
+  trustFromSec: 270,
+},
+{
+  id: 'getcrux-fix-8b',
+  mode: 'survival',
+  label: 'GetCrux fix 2: a cheap 8B self-hosted backup at 4:15',
+  steps: [
+    { atSec: 0, run: (api) => fullM2(api) },
+    { atSec: M3_AT, run: (api) => fullM3(api, { ...FULL_M3, breakers: true }) },
+    {
+      atSec: 255,
+      run: (api) => {
+        api.place('POWER_SUBSTATION', 19, 12)
+        const vllm = api.place('VLLM_CLUSTER', 16, 12)
+        api.set(vllm, 'breaker', true)
+        api.link(api.at(8, 9), vllm)
+        api.link(api.at(12, 12), vllm)
+        for (const c of [api.at(8, 4), api.at(10, 4)]) api.link(c, vllm)
+        api.link(vllm, api.at(17, 9))
+      },
+    },
+  ],
+  target: { minDeathRate: 0.9, mostlyCause: 'TRUST' },
+  targetText: '≥90% die of trust: a cheap backup answers wrong, which is worse than slow',
+  untilSec: NINE,
+  catalog: GETCRUX_DRILL,
+  trustFromSec: 270,
+},
+]
+
+export const SCENARIOS: readonly Scenario[] = [...CLASSIC_SCENARIOS, ...PHASE2_SCENARIOS, ...PHASE3_SCENARIOS, ...PHASE4_SCENARIOS, ...GETCRUX_SCENARIOS]
 
 export function scenarioById(id: string): Scenario | undefined {
   return SCENARIOS.find((s) => s.id === id)
 }
 
 /** A scripted purchase the budget can't cover: the player couldn't have made it either. */
-class Unaffordable extends Error {}
+class Unaffordable extends Error { }
 
 function apiFor(engine: GameEngine): ScenarioApi {
   const world = engine.world
