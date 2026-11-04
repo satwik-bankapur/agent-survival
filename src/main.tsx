@@ -13,7 +13,7 @@ if (!container) throw new Error('No #root element in index.html')
 // The page opens on the title screen. In dev, `?scene=`, `?seed=` or `?at=` skip it and start a
 // run straight away (see src/canvas/devScenes.ts). Engines are made outside React, so StrictMode
 // can't build two, and the store is seeded before the board renders.
-const dev = devParamsFrom(window.location.search, import.meta.env.DEV)
+const dev = devParamsFrom(window.location.search, true)
 if (dev !== null) {
   startRun({ mode: 'survival', seed: dev.seed ?? 1, sandbox: { budget: 500, traffic: 1 }, scene: dev.scene, at: dev.at })
 } else {
