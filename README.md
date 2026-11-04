@@ -97,3 +97,30 @@ One developer, built in planned sessions with [Claude Code](https://claude.com/c
 - [`docs/decisions.md`](docs/decisions.md): every rule and number, with the reason and the tuning history.
 
 
+## GetCrux drill
+
+A scenario modelled on GetCrux's public product: AI agents that make ad creatives, with video from Veo and Kling. It's built from public information only.
+
+![GetCrux drill](docs/media/getcrux-drill.gif)
+
+**What hits the board (0:00–9:00):**
+- Ad-batch surges: traffic ×1.4–1.8 for 60 s
+- Injected Reddit threads: 20% of prompts are attacks for 25 s
+- Veo (Frontier A) is down 4:30–6:00, so Kling (Frontier B) has to carry the load
+
+**Results, 40 seeds each (`npm run balance`):**
+
+| Build | Runs that died | Lowest trust after 4:30 (median) |
+|---|---|---|
+| Breakers only | 28/40 (70%) | 0.0% |
+| Shed load to 20/s during the outage | 15/40 (38%) | 25.4% |
+| Cheap 8B self-hosted backup | 39/40 (98%) | 10.6% |
+
+**What it shows:**
+1. Breakers reroute traffic. They don't add capacity.
+2. Shedding load (serve fewer, serve right) roughly halves the deaths.
+3. A cheap backup that answers wrong is worse than a slow one. For ads, read: off-brand creatives.
+
+Note: 7 of the 40 runs couldn't afford the 8B backup at 4:15. Not modelled yet: broken planner JSON, Meta API schema errors, legal-feedback edits.
+
+**Try it:** [play the drill](https://agentsurvival.runs-on.dev/?scene=getcrux-ad-factory) · reproduce it with `npm run balance`
